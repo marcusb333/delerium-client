@@ -1,0 +1,33 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="referrer" content="no-referrer" />
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'">
+    <title>Delete Paste</title>
+    <style>
+      body { font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif; margin: 2rem; max-width: 600px; }
+      .message { padding: 1rem; border-radius: .5rem; margin: 1rem 0; }
+      .error { background: #fee; color: #c00; border: 1px solid #fcc; }
+      .success { background: #efe; color: #060; border: 1px solid #cfc; }
+      .info { background: #eef; color: #006; border: 1px solid #ccf; }
+      button { padding: .6rem 1rem; border-radius: .5rem; border: 1px solid #ddd; cursor: pointer; margin-right: .5rem; }
+      button.danger { background: #c00; color: white; border-color: #a00; }
+      button.danger:hover { background: #d00; }
+    </style>
+  </head>
+  <body>
+    <h1>Delete Paste</h1>
+    <div id="content">
+      <div class="message info">
+        <strong>Confirm Deletion</strong>
+        <p>Are you sure you want to permanently delete this paste?</p>
+        <p>This action cannot be undone.</p>
+      </div>
+      <button class="danger" id="confirmDelete">Yes, Delete Paste</button>
+      <button onclick="window.close()">Cancel</button>
+    </div>
+    
+    <script src="js/delete.js"></script>
+  </body>
+</html>
