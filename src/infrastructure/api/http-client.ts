@@ -11,6 +11,8 @@ import {
   PowChallenge
 } from './interfaces.js';
 
+// Note: These are now aliases to the core domain models
+
 /**
  * HTTP-based API client using fetch
  */

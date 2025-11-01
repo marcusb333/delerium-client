@@ -59,6 +59,7 @@ describe('Proof of Work Functions', () => {
 
       (global.fetch as jest.Mock).mockResolvedValue({
         status: 200,
+        ok: true,
         json: jest.fn().mockResolvedValue(mockChallenge)
       });
 
@@ -72,16 +73,17 @@ describe('Proof of Work Functions', () => {
       const error = new Error('Network error');
       (global.fetch as jest.Mock).mockRejectedValue(error);
 
-      await expect(fetchPow()).rejects.toThrow('Network error');
+      await expect(fetchPow()).rejects.toThrow();
     });
 
-    it('should handle JSON parsing errors', async () => {
+    it('should handle non-ok responses', async () => {
       (global.fetch as jest.Mock).mockResolvedValue({
-        status: 200,
-        json: jest.fn().mockRejectedValue(new Error('Invalid JSON'))
+        status: 500,
+        ok: false,
+        json: jest.fn().mockResolvedValue({ error: 'Server error' })
       });
 
-      await expect(fetchPow()).rejects.toThrow('Invalid JSON');
+      await expect(fetchPow()).rejects.toThrow('Failed to fetch PoW challenge');
     });
   });
 

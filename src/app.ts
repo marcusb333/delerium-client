@@ -39,11 +39,13 @@ import {
 import {
   EncryptedData,
   PowChallenge,
-  PowSolution,
-  PasteMetadata,
-  CreatePasteResponse,
-  GetPasteResponse
+  PowSolution
 } from './core/models/paste.js';
+
+import { HttpApiClient } from './infrastructure/api/http-client.js';
+
+// Initialize API client
+const apiClient = new HttpApiClient();
 
 // ============================================================================
 // ENCODING UTILITIES
@@ -149,9 +151,7 @@ export async function decryptParts(keyB64: string, ivB64: string, ctB64: string)
  * @returns Promise resolving to challenge object, or null if PoW is disabled
  */
 export async function fetchPow(): Promise<PowChallenge | null> {
-  const r = await fetch("/api/pow");
-  if (r.status === 204) return null;
-  return await r.json();
+  return apiClient.getPowChallenge();
 }
 
 /**
@@ -310,28 +310,17 @@ if (typeof document !== 'undefined') {
     }
   } catch {}
 
-    const res = await fetch("/api/pastes", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        ct: ctB64,
-        iv: ivB64,
-        meta: {
-          expireTs,
-          singleView,
-          viewsAllowed: singleView ? 1 : views,
-          mime: "text/plain"
-        } as PasteMetadata,
-        pow
-      })
+    const data = await apiClient.createPaste({
+      ct: ctB64,
+      iv: ivB64,
+      meta: {
+        expireTs,
+        singleView,
+        viewsAllowed: singleView ? 1 : views,
+        mime: "text/plain"
+      },
+      pow
     });
-
-    if (!res.ok) {
-      const err = await res.json().catch(() => ({ error: res.statusText }));
-      throw new Error(err.error || res.statusText);
-    }
-    
-    const data = await res.json() as CreatePasteResponse;
     const url = `${location.origin}/view.html?p=${encodeURIComponent(data.id)}#${keyB64}:${ivB64}`;
     const deleteUrl = `${location.origin}/delete.html?p=${encodeURIComponent(data.id)}&token=${encodeURIComponent(data.deleteToken)}`;
     
@@ -387,13 +376,7 @@ if (typeof document !== 'undefined' && typeof location !== 'undefined') {
     }
     const [keyB64, ivB64] = frag.split(":");
     try {
-      const r = await fetch(`/api/pastes/${encodeURIComponent(id)}`);
-      if (!r.ok) {
-        if (r.status === 404) throw new Error("Content not found or has expired.");
-        if (r.status === 410) throw new Error("Content has expired.");
-        throw new Error("Failed to retrieve content.");
-      }
-      const { ct, iv } = await r.json() as GetPasteResponse;
+      const { ct, iv } = await apiClient.retrievePaste(id);
       
       // Check if this is password-protected (by checking if we can decrypt with regular method)
       let text: string;

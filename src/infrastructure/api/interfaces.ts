@@ -3,66 +3,27 @@
  * Allows swapping API implementations (fetch, axios, mock)
  */
 
-import { PasteMetadata } from '../../core/models/paste.js';
+import {
+  PowChallenge,
+  PowSolution,
+  CreatePasteRequest,
+  CreatePasteResponse,
+  GetPasteResponse
+} from '../../core/models/paste.js';
 
-/**
- * Proof-of-work solution
- */
-export interface PowSolution {
-  challenge: string;
-  nonce: number;
-}
+// Re-export types for convenience
+export type {
+  PowChallenge,
+  PowSolution,
+  CreatePasteRequest,
+  CreatePasteResponse,
+  GetPasteResponse
+};
 
-/**
- * Proof-of-work challenge from server
- */
-export interface PowChallenge {
-  challenge: string;
-  difficulty: number;
-}
-
-/**
- * Request to create a paste
- */
-export interface PasteCreateRequest {
-  /** Base64url-encoded ciphertext */
-  ct: string;
-  /** Base64url-encoded IV */
-  iv: string;
-  /** Paste metadata */
-  meta: {
-    expireTs: number;
-    viewsAllowed?: number;
-    singleView?: boolean;
-    mime?: string;
-  };
-  /** Proof-of-work solution (if required) */
-  pow?: PowSolution;
-}
-
-/**
- * Response from creating a paste
- */
-export interface PasteCreateResponse {
-  /** Paste ID */
-  id: string;
-  /** Deletion token */
-  deleteToken: string;
-}
-
-/**
- * Response from retrieving a paste
- */
-export interface PasteRetrieveResponse {
-  /** Base64url-encoded ciphertext */
-  ct: string;
-  /** Base64url-encoded IV */
-  iv: string;
-  /** Metadata */
-  meta: PasteMetadata;
-  /** Views remaining */
-  viewsLeft?: number;
-}
+// Legacy aliases for backward compatibility
+export type PasteCreateRequest = CreatePasteRequest;
+export type PasteCreateResponse = CreatePasteResponse;
+export type PasteRetrieveResponse = GetPasteResponse;
 
 /**
  * API Client Interface
