@@ -38,14 +38,18 @@ import {
 
 import {
   EncryptedData,
-  PowChallenge,
   PowSolution
 } from './core/models/paste.js';
 
 import { HttpApiClient } from './infrastructure/api/http-client.js';
+import { InlinePowSolver } from './infrastructure/pow/inline-solver.js';
 
-// Initialize API client
+// ============================================================================
+// INITIALIZE DEPENDENCIES
+// ============================================================================
+
 const apiClient = new HttpApiClient();
+const powSolver = new InlinePowSolver();
 
 // ============================================================================
 // ENCODING UTILITIES
@@ -145,46 +149,6 @@ export async function decryptParts(keyB64: string, ivB64: string, ctB64: string)
 
 // PowChallenge is now imported from core/models/paste.js
 
-/**
- * Fetch a proof-of-work challenge from the server
- * 
- * @returns Promise resolving to challenge object, or null if PoW is disabled
- */
-export async function fetchPow(): Promise<PowChallenge | null> {
-  return apiClient.getPowChallenge();
-}
-
-/**
- * Solve a proof-of-work challenge
- * 
- * Finds a nonce value such that SHA-256(challenge:nonce) has at least
- * 'difficulty' leading zero bits. Uses an iterative approach with
- * periodic yielding to avoid blocking the browser.
- * 
- * @param challenge Challenge string from server
- * @param difficulty Number of leading zero bits required
- * @returns Promise resolving to the solution nonce
- */
-export function doPow(challenge: string, difficulty: number): Promise<number> {
-  return new Promise((resolve) => {
-    const target = difficulty;
-    let nonce = 0;
-    function step() {
-      const enc = new TextEncoder().encode(`${challenge}:${nonce}`);
-      crypto.subtle.digest("SHA-256", enc).then((buf: ArrayBuffer) => {
-        const arr = new Uint8Array(buf);
-        let bits = 0;
-        for (const b of arr) {
-          if (b === 0) { bits += 8; continue; }
-          bits += Math.clz32(b) - 24; break;
-        }
-        if (bits >= target) resolve(nonce);
-        else { nonce++; if (nonce % 1000 === 0) setTimeout(step); else step(); }
-      });
-    }
-    step();
-  });
-}
 
 // ============================================================================
 // PASTE CREATION FLOW
@@ -301,15 +265,19 @@ if (typeof document !== 'undefined') {
       ctB64 = encrypted.ctB64;
     }
 
-  let pow: PowSolution | null = null;
-  try {
-    const ch = await fetchPow();
-    if (ch) {
-      const nonce = await doPow(ch.challenge, ch.difficulty);
-      pow = { challenge: ch.challenge, nonce };
+    // Solve proof-of-work challenge if enabled
+    let pow: PowSolution | null = null;
+    try {
+      const challenge = await apiClient.getPowChallenge();
+      if (challenge) {
+        pow = await powSolver.solve(challenge);
+      }
+    } catch (error) {
+      // PoW is optional, continue without it
+      console.warn('PoW challenge failed:', error);
     }
-  } catch {}
 
+    // Create paste using API client
     const data = await apiClient.createPaste({
       ct: ctB64,
       iv: ivB64,
@@ -377,7 +345,7 @@ if (typeof document !== 'undefined' && typeof location !== 'undefined') {
     const [keyB64, ivB64] = frag.split(":");
     try {
       const { ct, iv } = await apiClient.retrievePaste(id);
-      
+
       // Check if this is password-protected (by checking if we can decrypt with regular method)
       let text: string;
       try {
