@@ -1,0 +1,67 @@
+# Page snapshot
+
+```yaml
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - generic [ref=e3]:
+      - generic [ref=e4]: "?? Delirium Paste"
+      - generic [ref=e5]: Secure, Zero-Knowledge Paste Sharing
+      - generic [ref=e6]:
+        - generic [ref=e7]: "???"
+        - generic [ref=e8]: End-to-End Encrypted
+    - generic [ref=e9]:
+      - generic [ref=e10]:
+        - generic [ref=e11]: Your Content
+        - generic [ref=e12]:
+          - textbox "Type or paste your text here... It will be encrypted in your browser before upload." [ref=e13]
+          - generic: 24 / 1,048,576
+      - generic [ref=e14]:
+        - generic [ref=e15]: Expiration
+        - generic [ref=e16]:
+          - generic [ref=e17]:
+            - text: Expire after (minutes)
+            - generic [ref=e18]: "??"
+          - spinbutton "Expire after (minutes) ??" [ref=e19]: "60"
+          - generic [ref=e20]:
+            - button "1 hour" [ref=e21] [cursor=pointer]
+            - button "1 day" [ref=e22] [cursor=pointer]
+            - button "1 week" [ref=e23] [cursor=pointer]
+      - generic [ref=e24]:
+        - generic [ref=e25]: Security Options
+        - generic [ref=e26]:
+          - generic [ref=e27]:
+            - generic [ref=e28]:
+              - text: Maximum views
+              - generic [ref=e29]: "??"
+            - spinbutton "Maximum views ??" [ref=e30]: "10"
+          - generic [ref=e31]:
+            - generic [ref=e32] [cursor=pointer]:
+              - checkbox "?? Burn after reading ??" [ref=e33]
+              - generic [ref=e34]:
+                - text: "?? Burn after reading"
+                - generic [ref=e35]: "??"
+            - generic [ref=e36] [cursor=pointer]:
+              - checkbox "?? Password protect ??" [ref=e37]
+              - generic [ref=e38]:
+                - text: "?? Password protect"
+                - generic [ref=e39]: "??"
+      - button "?? ?? Encrypt & Upload" [ref=e40] [cursor=pointer]:
+        - generic [ref=e41]:
+          - text: "??"
+          - generic [ref=e42]: "?? Encrypt & Upload"
+      - generic [ref=e43]:
+        - generic [ref=e44]: "? Success! Your paste is ready"
+        - generic [ref=e45]: "Share this link with anyone you want to give access to: Delete URL: http://localhost:3000/delete.html?p=test-paste-id-456&token=test-delete-token-789"
+        - generic [ref=e46]:
+          - textbox [ref=e47] [cursor=pointer]: http://localhost:3000/view.html?p=test-paste-id-456#2ci00mtLkjTIM_G3RpbsBIn3TK2KkUkdeddZX1otScE:LMf8ixaelb6hgW1G
+          - button "Copy Link" [ref=e48] [cursor=pointer]
+    - generic [ref=e49]:
+      - paragraph [ref=e50]:
+        - link "?? BB Chat" [ref=e51] [cursor=pointer]:
+          - /url: chat.html
+        - link "??? View Paste" [ref=e52] [cursor=pointer]:
+          - /url: view.html
+      - paragraph [ref=e53]: Your content is encrypted in your browser. We never see your data.
+  - link "v0.1.4-alpha" [ref=e54] [cursor=pointer]:
+    - /url: https://github.com/SnarkyB/delerium-paste
+```

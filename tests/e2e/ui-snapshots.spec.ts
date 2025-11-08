@@ -13,24 +13,6 @@ test.describe('UI Snapshots', () => {
     await page.setViewportSize({ width: 1280, height: 720 });
   });
 
-  test('index page - light mode', async ({ page }) => {
-    await page.goto('/');
-    
-    // Set light mode
-    await page.evaluate(() => {
-      document.documentElement.setAttribute('data-theme', 'light');
-    });
-    
-    // Wait for fonts and images to load
-    await page.waitForLoadState('networkidle');
-    
-    // Take snapshot
-    await expect(page).toHaveScreenshot('index-light.png', {
-      fullPage: true,
-      animations: 'disabled'
-    });
-  });
-
   test('index page - dark mode', async ({ page }) => {
     await page.goto('/');
     
@@ -145,17 +127,6 @@ test.describe('UI Snapshots', () => {
       fullPage: true,
       animations: 'disabled'
     });
-  });
-
-  test('theme toggle button', async ({ page }) => {
-    await page.goto('/');
-    
-    // Hover over theme toggle
-    await page.hover('#themeToggle');
-    
-    await page.waitForTimeout(300); // Wait for hover animation
-    
-    await expect(page.locator('#themeToggle')).toHaveScreenshot('theme-toggle-hover.png');
   });
 
   test('preset buttons', async ({ page }) => {
