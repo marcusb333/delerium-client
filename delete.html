@@ -14,6 +14,19 @@
       button { padding: .6rem 1rem; border-radius: .5rem; border: 1px solid #ddd; cursor: pointer; margin-right: .5rem; }
       button.danger { background: #c00; color: white; border-color: #a00; }
       button.danger:hover { background: #d00; }
+      .version-display {
+        position: fixed;
+        bottom: 1rem;
+        right: 1rem;
+        background: rgba(0, 0, 0, 0.1);
+        padding: 0.5rem 0.75rem;
+        border-radius: 0.5rem;
+        color: #666;
+        font-size: 0.75rem;
+        font-weight: 500;
+        z-index: 99;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
     </style>
   </head>
   <body>
@@ -27,6 +40,9 @@
       <button class="danger" id="confirmDelete">Yes, Delete Paste</button>
       <button onclick="window.close()">Cancel</button>
     </div>
+
+    <!-- Version Display -->
+    <a href="https://github.com/SnarkyB/delerium-paste" target="_blank" rel="noopener noreferrer" class="version-display">v0.1.4-alpha</a>
     
     <script src="js/delete.js"></script>
   </body>
