@@ -1,3 +1,15 @@
+// Build testPathIgnorePatterns array conditionally
+const testPathIgnorePatterns = [
+  '/node_modules/',
+  '/tests/integration/',
+  '/tests/e2e/'
+];
+
+// Skip load tests by default (unless explicitly enabled)
+if (process.env.SKIP_LOAD_TESTS !== 'false') {
+  testPathIgnorePatterns.push('/tests/load/');
+}
+
 module.exports = {
   preset: 'ts-jest',
   testEnvironment: 'jsdom',
@@ -6,13 +18,14 @@ module.exports = {
     '**/__tests__/**/*.ts',
     '**/?(*.)+(spec|test).ts'
   ],
-  testPathIgnorePatterns: [
-    '/node_modules/',
-    '/tests/integration/',
-    '/tests/e2e/'
-  ],
+  testPathIgnorePatterns,
   transform: {
-    '^.+\\.ts$': 'ts-jest',
+    '^.+\\.ts$': ['ts-jest', {
+      tsconfig: {
+        moduleResolution: 'node',
+        esModuleInterop: true,
+      }
+    }],
   },
   moduleNameMapper: {
     '^(\\.{1,2}/.*)\\.js$': '$1',

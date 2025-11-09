@@ -11,6 +11,8 @@ tests/
 ├── integration/            # Integration tests
 │   ├── api.test.ts
 │   └── encryption-flow.test.ts
+├── load/                   # Load tests (Jest)
+│   └── pow-load.test.ts
 ├── unit/                   # Unit tests (Jest)
 │   ├── utils.test.ts
 │   ├── encryption.test.ts
@@ -41,6 +43,13 @@ tests/
 - **Coverage**: Full paste creation and viewing flow, UI responsiveness
 - **Run**: `npm run test:e2e`
 
+### Load Tests
+- **Purpose**: Test Proof-of-Work functionality under concurrent load conditions
+- **Framework**: Jest with fetch API
+- **Coverage**: Concurrent challenge generation, concurrent verification, cache behavior, performance metrics
+- **Run**: `npm run test:load`
+- **Note**: Requires a running server instance. Tests are excluded from regular test runs by default.
+
 ## Running Tests
 
 ### Run All Tests
@@ -58,6 +67,9 @@ npm run test:integration
 
 # End-to-end tests only
 npm run test:e2e
+
+# Load tests only (requires running server)
+npm run test:load
 
 # All tests
 npm run test:all
@@ -161,11 +173,48 @@ npx playwright test paste-flow.spec.ts
 npx playwright test --debug
 ```
 
+### Load Tests
+```bash
+# Run load tests (requires server running on localhost:8080)
+npm run test:load
+
+# Run with custom server URL
+API_BASE_URL=http://localhost:3000 npm run test:load
+
+# Skip load tests (default behavior)
+SKIP_LOAD_TESTS=true npm test
+```
+
+## Load Testing
+
+Load tests verify Proof-of-Work functionality under various concurrent load conditions:
+
+### Prerequisites
+- Server must be running (use `make dev` or `make start`)
+- Server should have PoW enabled (default configuration)
+
+### Test Scenarios
+1. **Concurrent Challenge Generation**: Tests 10, 50, and 100 simultaneous challenge requests
+2. **Concurrent Verification**: Tests concurrent paste creation with valid PoW solutions
+3. **Cache Behavior**: Verifies challenge reuse prevention and expiration handling
+4. **Performance Benchmarks**: Measures latency, throughput, and error rates
+
+### Performance Targets
+- Challenge generation: Average < 100ms, P95 < 200ms
+- Verification: Average < 500ms, P95 < 1s
+- Success rate: > 95% under load
+
+### Configuration
+- Set `API_BASE_URL` environment variable to test against different servers
+- Set `SKIP_LOAD_TESTS=true` to exclude from regular test runs (default behavior)
+- Tests use difficulty 4 for faster execution (can be adjusted in test file)
+
 ## Continuous Integration
 
 The test suite is designed to run in CI environments:
 - All tests run in headless mode
-- No external dependencies required
+- Load tests are excluded by default (set `SKIP_LOAD_TESTS=false` to enable)
+- No external dependencies required for unit/integration tests
 - Deterministic test results
 - Comprehensive error reporting
 

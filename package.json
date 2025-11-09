@@ -17,6 +17,7 @@
     "test:integration": "npx jest --config jest.integration.config.js",
     "test:e2e": "npx playwright test",
     "test:e2e:ui": "npx playwright test --ui",
+    "test:load": "SKIP_LOAD_TESTS=false npx jest tests/load",
     "test:all": "npm run test:unit && npm run test:integration && npm run test:e2e",
     "prepare": "husky"
   },
