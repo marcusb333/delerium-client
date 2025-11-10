@@ -1,9 +1,21 @@
 import request from 'supertest';
 
-// TODO: Fix integration tests - module import issues need to be resolved
-// These tests are skipped until the mock server setup is fixed
+/**
+ * API Integration Tests
+ * 
+ * NOTE: These tests are currently skipped because they require a running server instance.
+ * The server endpoints are tested in the server codebase. The HttpApiClient (which calls
+ * these endpoints) is already thoroughly tested in unit/infrastructure/api-client.test.ts.
+ * 
+ * To run these tests, you would need to:
+ * 1. Start the server (e.g., via docker compose)
+ * 2. Update the tests to use the actual server URL
+ * 3. Remove the describe.skip wrapper
+ * 
+ * For now, these tests serve as documentation of the expected API contract.
+ */
 
-// Mock server setup for API testing
+// Mock server setup for API testing (not currently used - tests are skipped)
 const mockApp = {
   get: jest.fn(),
   post: jest.fn(),

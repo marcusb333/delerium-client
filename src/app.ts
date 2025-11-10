@@ -45,6 +45,21 @@ import { HttpApiClient } from './infrastructure/api/http-client.js';
 import { InlinePowSolver } from './infrastructure/pow/inline-solver.js';
 
 // ============================================================================
+// TYPE DEFINITIONS
+// ============================================================================
+
+/**
+ * Extended Window interface for UI helper functions
+ */
+interface WindowWithUI extends Window {
+  updateStatus?: (success: boolean, message: string) => void;
+  showInfo?: (viewsLeft: number, expireTs: number) => void;
+  showDestroyButton?: (id: string, token: string) => void;
+  setButtonLoading?: (show: boolean, message?: string) => void;
+  showOutput?: (success: boolean, title: string, message: string, url?: string | null) => void;
+}
+
+// ============================================================================
 // INITIALIZE DEPENDENCIES
 // ============================================================================
 
@@ -353,8 +368,8 @@ if (typeof document !== 'undefined' && typeof location !== 'undefined') {
     const content = document.getElementById("content");
     
     // Update status if new UI is available
-    const updateStatus = (window as any).updateStatus;
-    const showInfo = (window as any).showInfo;
+    const updateStatus = (window as WindowWithUI).updateStatus;
+    const showInfo = (window as WindowWithUI).showInfo;
     
     if (!id || !frag) { 
       if (content) {
@@ -433,8 +448,8 @@ if (typeof document !== 'undefined' && typeof location !== 'undefined') {
       
       // Check if delete token exists for this paste
       const deleteToken = localStorage.getItem(`deleteToken_${id}`);
-      if (deleteToken && typeof (window as any).showDestroyButton === 'function') {
-        (window as any).showDestroyButton(id, deleteToken);
+      if (deleteToken && typeof (window as WindowWithUI).showDestroyButton === 'function') {
+        (window as WindowWithUI).showDestroyButton?.(id, deleteToken);
       }
       
       // Securely clear decryption data from memory
@@ -466,8 +481,8 @@ if (typeof document !== 'undefined' && typeof location !== 'undefined') {
  */
 function showLoading(show: boolean, message?: string): void {
   // Use new UI function if available
-  if (typeof (window as any).setButtonLoading === 'function') {
-    (window as any).setButtonLoading(show, message);
+  if (typeof (window as WindowWithUI).setButtonLoading === 'function') {
+    (window as WindowWithUI).setButtonLoading?.(show, message);
   } else {
     // Fallback for old UI
     const loading = document.getElementById('loading');
@@ -485,8 +500,8 @@ function showLoading(show: boolean, message?: string): void {
  */
 function showError(message: string): void {
   // Use new UI function if available
-  if (typeof (window as any).showOutput === 'function') {
-    (window as any).showOutput(false, 'Error', message, null);
+  if (typeof (window as WindowWithUI).showOutput === 'function') {
+    (window as WindowWithUI).showOutput?.(false, 'Error', message, null);
   } else {
     // Fallback for old UI
     const out = document.getElementById('out');
@@ -502,11 +517,10 @@ function showError(message: string): void {
  */
 function showSuccess(shareUrl: string, deleteUrl: string, isPasswordProtected: boolean = false): void {
   // Use new UI function if available
-  if (typeof (window as any).showOutput === 'function') {
+  if (typeof (window as WindowWithUI).showOutput === 'function') {
     const title = isPasswordProtected ? 'Password-protected paste ready!' : 'Success! Your paste is ready';
     const message = `Share this link with anyone you want to give access to:`;
-    (window as any).showOutput(true, title, message, shareUrl);
-  } else {
+    (window as WindowWithUI).showOutput?.(true, title, message, shareUrl);  } else {
     // Fallback for old UI
     const out = document.getElementById('out');
     if (out) {

@@ -1,12 +1,4 @@
-// TODO: Fix integration tests - module import issues need to be resolved
-// These tests are skipped until the import paths are fixed
-// import { encryptString, decryptParts, b64u, ub64u } from '../../src/app';
-
-// Stub declarations to prevent TypeScript errors while tests are skipped
-const encryptString = async (text: string): Promise<any> => ({ keyB64: '', ivB64: '', ctB64: '' });
-const decryptParts = async (keyB64: string, ivB64: string, ctB64: string): Promise<string> => '';
-const b64u = (arr: Uint8Array | ArrayBuffer): string => '';
-const ub64u = (str: string): Uint8Array => new Uint8Array();
+import { encryptString, decryptParts, b64u, ub64u } from '../../src/app.js';
 
 /**
  * Encryption Flow Integration Tests
@@ -57,7 +49,7 @@ beforeEach(() => {
   (global.crypto.getRandomValues as any) = mockGetRandomValues;
 });
 
-describe.skip('Encryption Flow Integration Tests', () => {
+describe('Encryption Flow Integration Tests', () => {
   describe('Complete Encrypt-Decrypt Flow', () => {
     it('should encrypt and decrypt text successfully', async () => {
       const plaintext = 'This is a test message for encryption';
