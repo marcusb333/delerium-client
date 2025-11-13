@@ -53,7 +53,7 @@ export class InlinePowSolver implements IPowSolver {
           if (nonce % 1000 === 0) {
             setTimeout(step, 0);
           } else {
-            void step();
+            step();
           }
         }
       };
