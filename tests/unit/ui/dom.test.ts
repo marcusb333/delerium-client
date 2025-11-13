@@ -143,41 +143,31 @@ describe('DOM Interaction Functions', () => {
   });
 
   describe('URL Parsing', () => {
+    // Note: Jest 30 has stricter handling of window.location mocking
+    // We'll test URL parsing by directly testing the logic without mocking location
+    // This is a more reliable approach that works across Jest versions
+    
     it('should parse URL parameters correctly', () => {
-      // Mock location
-      Object.defineProperty(window, 'location', {
-        value: {
-          pathname: '/view.html',
-          search: '?p=test-paste-id',
-          hash: '#test-key:test-iv',
-          origin: 'http://localhost'
-        },
-        writable: true
-      });
-
-      const q = new URLSearchParams(window.location.search);
+      // Test URL parsing logic directly using URLSearchParams and hash parsing
+      const testSearch = '?p=test-paste-id';
+      const testHash = '#test-key:test-iv';
+      
+      const q = new URLSearchParams(testSearch);
       const id = q.get('p');
-      const frag = window.location.hash.startsWith('#') ? window.location.hash.slice(1) : '';
+      const frag = testHash.startsWith('#') ? testHash.slice(1) : '';
 
       expect(id).toBe('test-paste-id');
       expect(frag).toBe('test-key:test-iv');
     });
 
     it('should handle missing parameters', () => {
-      // Mock location without required parameters
-      Object.defineProperty(window, 'location', {
-        value: {
-          pathname: '/view.html',
-          search: '',
-          hash: '',
-          origin: 'http://localhost'
-        },
-        writable: true
-      });
-
-      const q = new URLSearchParams(window.location.search);
+      // Test URL parsing logic with empty parameters
+      const testSearch = '';
+      const testHash = '';
+      
+      const q = new URLSearchParams(testSearch);
       const id = q.get('p');
-      const frag = window.location.hash.startsWith('#') ? window.location.hash.slice(1) : '';
+      const frag = testHash.startsWith('#') ? testHash.slice(1) : '';
 
       expect(id).toBeNull();
       expect(frag).toBe('');
