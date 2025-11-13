@@ -36,6 +36,8 @@ module.exports = {
     // Exclude UI-heavy files from global coverage (require manual/E2E testing)
     '!src/app.ts',
     '!src/delete.ts',
+    '!src/ui/**', // UI modules require E2E testing
+    '!src/features/**', // Feature modules require E2E testing
     // Include core modules (validators and models) now that we have tests
     // Exclude crypto module (covered in PR #1, has separate tests)
     '!src/core/crypto/**',

@@ -301,7 +301,7 @@ export async function decryptWithPassword(
  */
 export const ENHANCED_CSP = [
   "default-src 'self'",
-  "script-src 'self' 'unsafe-inline'", // Allow inline scripts for our app
+  "script-src 'self'", // Disallow inline scripts
   "style-src 'self' 'unsafe-inline'",  // Allow inline styles
   "img-src 'self' data:",
   "font-src 'self'",

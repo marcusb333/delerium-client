@@ -1,3 +1,4 @@
 # Generated security scan reports
 npm-audit-report.json
 npm-outdated.json
+coverage/

@@ -78,11 +78,11 @@ test.describe('Paste Creation and Viewing Flow', () => {
     await expect(viewBtn).toBeVisible();
     await expect(viewBtn).toContainText('View Paste');
     
-    // Verify delete token is stored in localStorage
-    const deleteToken = await page.evaluate(() => {
-      return localStorage.getItem('deleteToken_test-paste-id-456');
-    });
-    expect(deleteToken).toBe('test-delete-token-789');
+      // Verify delete token is stored in sessionStorage
+      const deleteToken = await page.evaluate(() => {
+        return sessionStorage.getItem('deleteToken_test-paste-id-456');
+      });
+      expect(deleteToken).toBe('test-delete-token-789');
     
     // Verify View Paste button opens URL in new tab
     // Note: window.open with target="_blank" creates a new tab

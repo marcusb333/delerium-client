@@ -4,7 +4,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="referrer" content="no-referrer" />
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; connect-src 'self'; frame-ancestors 'none'; base-uri 'none'; form-action 'self';">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; connect-src 'self'; frame-ancestors 'none'; base-uri 'none'; form-action 'self';">
     <title>Delirium Paste - Secure Zero-Knowledge Paste</title>
     <style>
       /* CSS Reset & Base */
@@ -720,120 +720,5 @@
     <a href="https://github.com/SnarkyB/delerium-paste" target="_blank" rel="noopener noreferrer" class="version-display">v0.1.6-alpha</a>
 
     <script type="module" src="js/app.js"></script>
-    <script>
-      // Character counter
-      const textarea = document.getElementById('paste');
-      const charCounter = document.getElementById('charCounter');
-      const maxChars = 1048576;
-
-      textarea.addEventListener('input', () => {
-        const length = textarea.value.length;
-        charCounter.textContent = `${length.toLocaleString()} / ${maxChars.toLocaleString()}`;
-        
-        if (length > maxChars * 0.9) {
-          charCounter.classList.add('danger');
-          charCounter.classList.remove('warning');
-        } else if (length > maxChars * 0.7) {
-          charCounter.classList.add('warning');
-          charCounter.classList.remove('danger');
-        } else {
-          charCounter.classList.remove('warning', 'danger');
-        }
-      });
-
-      // Password toggle
-      const usePasswordCheckbox = document.getElementById('usePassword');
-      const passwordGroup = document.getElementById('passwordGroup');
-
-      usePasswordCheckbox.addEventListener('change', () => {
-        passwordGroup.style.display = usePasswordCheckbox.checked ? 'block' : 'none';
-      });
-
-      // Copy button functionality and URL input click
-      document.addEventListener('click', (e) => {
-        if (e.target.id === 'copyBtn' || e.target.closest('#copyBtn')) {
-          const urlInput = document.getElementById('pasteUrl');
-          if (urlInput && urlInput.value) {
-            urlInput.select();
-            urlInput.setSelectionRange(0, 99999); // For mobile devices
-            document.execCommand('copy');
-            
-            const btn = document.getElementById('copyBtn');
-            const originalText = btn.textContent;
-            btn.textContent = '✓ Copied!';
-            btn.classList.add('copied');
-            
-            setTimeout(() => {
-              btn.textContent = originalText;
-              btn.classList.remove('copied');
-            }, 2000);
-          }
-        }
-        
-        // Make URL input clickable - select all text when clicked
-        if (e.target.id === 'pasteUrl') {
-          const urlInput = e.target;
-          urlInput.select();
-          urlInput.setSelectionRange(0, 99999);
-        }
-      });
-
-      // Show output with animation
-      window.showOutput = (success, title, message, url) => {
-        const output = document.getElementById('output');
-        const outputTitle = document.getElementById('outputTitle');
-        const outputMessage = document.getElementById('outputMessage');
-        const pasteUrl = document.getElementById('pasteUrl');
-        const viewBtn = document.getElementById('viewBtn');
-        
-        output.classList.toggle('error', !success);
-        outputTitle.textContent = title;
-        outputMessage.textContent = message;
-        
-        if (url) {
-          pasteUrl.value = url;
-          document.querySelector('.output-url').style.display = 'flex';
-          
-          // Show and configure view button
-          if (viewBtn) {
-            viewBtn.style.display = 'inline-block';
-            // Remove any existing click handlers
-            const newViewBtn = viewBtn.cloneNode(true);
-            viewBtn.parentNode?.replaceChild(newViewBtn, viewBtn);
-            const btn = document.getElementById('viewBtn');
-            if (btn) {
-              btn.addEventListener('click', () => {
-                window.open(url, '_blank', 'noopener,noreferrer');
-              });
-            }
-          }
-        } else {
-          document.querySelector('.output-url').style.display = 'none';
-          if (viewBtn) {
-            viewBtn.style.display = 'none';
-          }
-        }
-        
-        output.classList.add('show');
-        output.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-      };
-
-      // Button loading state
-      window.setButtonLoading = (loading, message) => {
-        const btn = document.getElementById('save');
-        const btnText = document.getElementById('btnText');
-        
-        if (!btn || !btnText) return;
-        
-        if (loading) {
-          btn.disabled = true;
-          const loadingMessage = message || 'Processing...';
-          btnText.innerHTML = '<span class="spinner"></span> ' + loadingMessage;
-        } else {
-          btn.disabled = false;
-          btnText.innerHTML = '<span class="btn-icon">🔒</span> Encrypt & Upload';
-        }
-      };
-    </script>
   </body>
 </html>

@@ -10,15 +10,27 @@ const token = q.get("token");
 
 const content = document.getElementById("content");
 
+function renderMessage(type: 'success' | 'error' | 'info', title: string, messages: string[]): void {
+  if (!content) return;
+  content.innerHTML = '';
+  const wrapper = document.createElement('div');
+  wrapper.className = `message ${type}`;
+
+  const heading = document.createElement('strong');
+  heading.textContent = title;
+  wrapper.appendChild(heading);
+
+  messages.forEach(msg => {
+    const paragraph = document.createElement('p');
+    paragraph.textContent = msg;
+    wrapper.appendChild(paragraph);
+  });
+
+  content.appendChild(wrapper);
+}
+
 if (!id || !token) {
-  if (content) {
-    content.innerHTML = `
-      <div class="message error">
-        <strong>Invalid Delete Link</strong>
-        <p>Missing paste ID or deletion token.</p>
-      </div>
-    `;
-  }
+  renderMessage('error', 'Invalid Delete Link', ['Missing paste ID or deletion token.']);
 } else {
   const btn = document.getElementById("confirmDelete");
   if (btn && btn instanceof HTMLButtonElement) {
@@ -34,37 +46,16 @@ if (!id || !token) {
         });
         
         if (res.ok || res.status === 204) {
-          if (content) {
-            content.innerHTML = `
-              <div class="message success">
-                <strong>Paste Deleted</strong>
-                <p>The paste has been permanently deleted.</p>
-              </div>
-            `;
-          }
+          renderMessage('success', 'Paste Deleted', ['The paste has been permanently deleted.']);
         } else {
           const err = await res.json().catch(() => ({ error: "Unknown error" }));
-          if (content) {
-            content.innerHTML = `
-              <div class="message error">
-                <strong>Deletion Failed</strong>
-                <p>Error: ${err.error || "Invalid token or paste not found"}</p>
-              </div>
-            `;
-          }
+          renderMessage('error', 'Deletion Failed', [`Error: ${err.error || "Invalid token or paste not found"}`]);
           // Restore button on error
           btn.disabled = false;
           btn.textContent = originalText;
         }
       } catch (e) {
-        if (content) {
-          content.innerHTML = `
-            <div class="message error">
-              <strong>Deletion Failed</strong>
-              <p>Error: ${(e as Error).message}</p>
-            </div>
-          `;
-        }
+        renderMessage('error', 'Deletion Failed', [`Error: ${(e as Error).message}`]);
         // Restore button on error
         btn.disabled = false;
         btn.textContent = originalText;
