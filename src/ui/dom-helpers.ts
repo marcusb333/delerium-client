@@ -138,3 +138,19 @@ export function setupSingleViewToggle(): void {
     });
   }
 }
+
+/**
+ * Setup "Create New Paste" button navigation
+ */
+export function setupNewPasteButton(): void {
+  if (typeof document === 'undefined') return;
+  const newPasteBtn = document.getElementById('newPasteBtn') as HTMLButtonElement | null;
+  if (!newPasteBtn) return;
+
+  newPasteBtn.addEventListener('click', (event) => {
+    event.preventDefault();
+    // Use URL constructor to preserve directory structure in case of subdirectory deployments
+    const targetUrl = new URL('index.html', window.location.href).toString();
+    window.location.assign(targetUrl);
+  });
+}

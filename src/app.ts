@@ -21,7 +21,8 @@ import {
   setupViewCopyButton,
   setupUrlInputSelection,
   setupPasswordToggle,
-  setupSingleViewToggle
+  setupSingleViewToggle,
+  setupNewPasteButton
 } from './ui/dom-helpers.js';
 
 import { initializeWindowUI } from './ui/ui-manager.js';
@@ -52,6 +53,7 @@ function initializeApp(): void {
     setupUrlInputSelection();
     setupPasswordToggle();
     setupSingleViewToggle();
+    setupNewPasteButton();
   });
   
   // Setup paste creation (for index.html)

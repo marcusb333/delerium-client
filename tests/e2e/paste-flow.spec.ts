@@ -168,6 +168,38 @@ test.describe('Paste Creation and Viewing Flow', () => {
 });
 
 test.describe('Paste Viewing Flow', () => {
+  test('should navigate to create page when clicking "Create New Paste" button', async ({ page }) => {
+    // Mock the paste API endpoint
+    await page.route('**/api/pastes/test-paste-id', async route => {
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({
+          ct: 'test-ciphertext',
+          iv: 'test-iv'
+        })
+      });
+    });
+
+    // Navigate to view page with paste ID and key
+    await page.goto('/view.html?p=test-paste-id#test-key:test-iv');
+
+    // Wait for page to load
+    await page.waitForSelector('#newPasteBtn');
+
+    // Verify the button is visible
+    const newPasteBtn = page.locator('#newPasteBtn');
+    await expect(newPasteBtn).toBeVisible();
+    await expect(newPasteBtn).toContainText('Create New Paste');
+
+    // Click the button
+    await newPasteBtn.click();
+
+    // Verify navigation to index.html
+    await page.waitForURL('**/index.html');
+    expect(page.url()).toContain('index.html');
+  });
+
   test('should decrypt and display paste content', async ({ page }) => {
     // Mock the paste API endpoint
     await page.route('**/api/pastes/test-paste-id', async route => {
