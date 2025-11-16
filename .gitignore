@@ -2,3 +2,12 @@
 npm-audit-report.json
 npm-outdated.json
 coverage/
+
+# Compiled test files (TypeScript output)
+# These are generated from .ts sources and should not be committed
+tests/**/*.js
+tests/**/*.d.ts
+!tests/**/*.config.js
+
+# Playwright report
+playwright-report/
