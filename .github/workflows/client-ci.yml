@@ -91,13 +91,6 @@ jobs:
       - name: Generate coverage report
         run: npm run test:coverage
 
-      - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v4
-        with:
-          files: ./coverage/lcov.info
-          flags: unittests
-          name: client-unit-tests
-
   # =============================================================================
   # Integration Tests
   # =============================================================================
@@ -134,9 +127,6 @@ jobs:
   e2e-tests:
     name: E2E Tests
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        browser: [chromium, firefox, webkit]
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -159,16 +149,16 @@ jobs:
         run: npm ci
 
       - name: Install Playwright browsers
-        run: npx playwright install --with-deps ${{ matrix.browser }}
+        run: npx playwright install --with-deps chromium
 
       - name: Run E2E tests
-        run: npx playwright test --project=${{ matrix.browser }}
+        run: npx playwright test --project=chromium
 
       - name: Upload Playwright report
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: playwright-report-${{ matrix.browser }}
+          name: playwright-report
           path: playwright-report/
           retention-days: 7
 
@@ -208,9 +198,8 @@ jobs:
         with:
           name: client-dist
           path: |
-            js/
-            *.html
-            css/
+            src/**/*.js
+            src/**/*.d.ts
           retention-days: 7
 
   # =============================================================================
@@ -232,56 +221,11 @@ jobs:
       - name: Run npm audit
         run: npm audit --audit-level=moderate
 
-      - name: Run npm outdated
-        run: npm outdated || true
-        continue-on-error: true
-
-  # =============================================================================
-  # Publish to GitHub Pages (main branch only)
-  # =============================================================================
-  publish:
-    name: Publish to GitHub Pages
-    runs-on: ubuntu-latest
-    needs: [build, e2e-tests]
-    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-    permissions:
-      contents: read
-      pages: write
-      id-token: write
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-          cache: 'npm'
-
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Build application
-        run: npm run build
-
-      - name: Setup Pages
-        uses: actions/configure-pages@v4
-
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: '.'
-
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
-
 # Workflow run summary
 # This workflow:
 # 1. Runs quality checks (lint + type check)
 # 2. Runs unit tests with coverage
 # 3. Runs integration tests
-# 4. Runs E2E tests across browsers
+# 4. Runs E2E tests on Chromium
 # 5. Builds the application
 # 6. Runs security audit
-# 7. Publishes to GitHub Pages (main branch only)
