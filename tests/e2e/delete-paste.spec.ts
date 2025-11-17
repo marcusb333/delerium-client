@@ -399,7 +399,7 @@ test.describe('Delete Page - UI and UX', () => {
     await expect(versionDisplay).toContainText('v0.1.7-alpha');
     
     // Verify it links to GitHub
-    await expect(versionDisplay).toHaveAttribute('href', 'https://github.com/SnarkyB/delerium-paste');
+    await expect(versionDisplay).toHaveAttribute('href', 'https://github.com/marcusb333/delerium-paste');
   });
 });
 
