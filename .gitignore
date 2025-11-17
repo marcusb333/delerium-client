@@ -11,3 +11,14 @@ tests/**/*.d.ts
 
 # Playwright report
 playwright-report/
+
+# IDE configuration
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.DS_Store
+src/.DS_Store
+tests/.DS_Store
+**/.DS_Store
